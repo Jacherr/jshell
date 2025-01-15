@@ -12,13 +12,18 @@ enum lex_entry_type_t
     LE_COMMAND_SEP
 };
 
+struct lex_data_run_program
+{
+    char* program_name;
+    char** program_argv;
+    int program_argc;
+};
+
 struct lex_entry_t
 {
-    /* raw string of this entry (if any) */
-    char* str;
     enum lex_entry_type_t type;
     union {
-
+        struct lex_data_run_program lex_data_run_program;
     } data;
     struct lex_entry_t* next;
 };
