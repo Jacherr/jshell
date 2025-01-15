@@ -12,7 +12,7 @@ int main(int argc, char* argv[])
 {
     char test[] = "   test  123 test   ";
 
-    char** out = split_commandline(test);
+    char** out = split_string(test);
     int idx = 0;
 
     while(out[idx] != NULL)

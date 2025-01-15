@@ -5,7 +5,7 @@
 
 // TODO: move lexing stuff to its own file?
 
-enum lex_entry_type_t
+enum lex_entry_type
 {
     /* path or program name found in PATH */
     LEX_COMMAND_NAME,
@@ -24,9 +24,9 @@ struct lex_data_redirect_fd
     int fd;
 };
 
-struct lex_entry_t
+struct lex_token
 {
-    enum lex_entry_type_t type;
+    enum lex_entry_type type;
     /* any additional data based on the type */
     union lex_data {
         /* LEX_COMMAND_REDIRECT */
@@ -36,19 +36,15 @@ struct lex_entry_t
            LEX_COMMAND_NAME LEX_COMMAND_ARG 
         */
         char* data_string;
-        /* embedded command, i.e. $(cat x)
-           LEX_COMMAND_SUB
-         */
-        struct lex_entry_t* sub_lex;
         /* where there is no data
            LEX_COMMAND_SEP
         */
         char data_none;
     } lex_data;
-    struct lex_entry_t* next;
+    struct lex_token* next;
 };
 
 /* produces a machine-processable list of items from the command line words (which may each be more than one word) */
-struct lex_entry_t* lex_commandline(char** split_commandline);
+struct lex_token* lex_commandline(char* input);
 
 #endif /* ifndef __PARSE_H */

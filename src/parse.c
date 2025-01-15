@@ -5,10 +5,13 @@
 #include <unistd.h>
 
 #include "parse.h"
+#include "stringparse.h"
 
-struct lex_entry_t* lex_commandline(char** split_commandline)
+struct lex_token* lex_commandline(char* input)
 {
     size_t cursor;
     /* linked list */
-    struct lex_entry_t* out;
+    struct lex_token* out;
+
+    
 }

@@ -5,13 +5,12 @@
 
 #include "stringparse.h"
 
-/* returns 1 if character is whitespace, otherwise zero. */
-static __always_inline char _character_is_whitespace(char character)
+__always_inline char character_is_whitespace(char character)
 {
     return character == ' ' || character == '\n';
 }
 
-void trim_commandline(char* input)
+void trim_string(char* input)
 {
     size_t substr_end = strlen(input) - 1, substr_start = 0;
     while(_character_is_whitespace(input[substr_start]))
@@ -28,10 +27,7 @@ void trim_commandline(char* input)
     memmove(input, input+substr_start, substr_end+1);
 }
 
-/* returns a pointer offset, or -1 if the word index is not valid
-   this assumes the input is trimmed
- */
-static ssize_t _commandline_seek_to_word(char* input, int word_idx)
+ssize_t string_seek_to_word(char* input, int word_idx)
 {
     size_t cursor = 0;
     char reading_whitespace = 0;
@@ -39,12 +35,12 @@ static ssize_t _commandline_seek_to_word(char* input, int word_idx)
 
     for(; cursor < strlen(input); cursor++)
     {
-        if(!reading_whitespace && _character_is_whitespace(input[cursor]))
+        if(!reading_whitespace && character_is_whitespace(input[cursor]))
         {
             /* look ahead at end of this word to see its length */
             reading_whitespace = 1;
             current_word_idx++;
-        } else if(!_character_is_whitespace(input[cursor]))
+        } else if(!character_is_whitespace(input[cursor]))
         {
             reading_whitespace = 0;
             if(current_word_idx == word_idx)
@@ -57,16 +53,13 @@ static ssize_t _commandline_seek_to_word(char* input, int word_idx)
     return -1;
 }
 
-/* Returns NULL if no such word exists at the index 
-   this assumes the input is trimmed, and returns a heap allocated string
-   */
-static char* _commandline_read_word(char* input, int word_idx)
+char* string_read_word(char* input, int word_idx)
 {
     ssize_t cursor = 0, old_cursor = 0;
     char* out;
     long word_len = 0;
 
-    cursor = _commandline_seek_to_word(input, word_idx);
+    cursor = string_seek_to_word(input, word_idx);
     if(cursor < 0)
     {
         return NULL;
@@ -74,7 +67,7 @@ static char* _commandline_read_word(char* input, int word_idx)
     old_cursor = cursor;
 
     // we need to get the length of this word, and then copy it after
-    while(input[cursor] != '\0' && !_character_is_whitespace(input[cursor]))
+    while(input[cursor] != '\0' && !character_is_whitespace(input[cursor]))
     {
         word_len++;
         cursor++;
@@ -92,7 +85,7 @@ static char* _commandline_read_word(char* input, int word_idx)
     return out;
 }
 
-char** split_commandline(char* input)
+char** split_string(char* input)
 {
     int words = 0, current_word_idx = 0;
     // if we are reading
@@ -101,7 +94,7 @@ char** split_commandline(char* input)
     char** out = malloc(ARGCOUNT_MAX);
     char* current_word;
 
-    trim_commandline(input);
+    trim_string(input);
     while(reading)
     {
         if(current_word_idx >= ARGCOUNT_MAX)
@@ -111,7 +104,7 @@ char** split_commandline(char* input)
             break;
         }
 
-        current_word = _commandline_read_word(input, current_word_idx);
+        current_word = string_read_word(input, current_word_idx);
         if(current_word != NULL)
         {
             words++;
