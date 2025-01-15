@@ -3,4 +3,4 @@
 
 void print_help();
 
-#endif /* ifndef __HELP_H */
+#endif /* #ifndef __HELP_H */

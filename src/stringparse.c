@@ -13,12 +13,12 @@ __always_inline char character_is_whitespace(char character)
 void trim_string(char* input)
 {
     size_t substr_end = strlen(input) - 1, substr_start = 0;
-    while(_character_is_whitespace(input[substr_start]))
+    while(character_is_whitespace(input[substr_start]))
     {
         substr_start++;
     }
 
-    while(_character_is_whitespace(input[substr_end]))
+    while(character_is_whitespace(input[substr_end]))
     {
         substr_end--;
     }

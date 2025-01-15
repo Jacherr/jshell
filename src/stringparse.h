@@ -1,6 +1,7 @@
-#include <limits.h>
+#ifndef __STRINGPARSE_H
+#define __STRINGPARSE_H
 
-// TODO: move pure string manipulation functions to own file?
+#include <limits.h>
 
 #define ARGCOUNT_MAX SHRT_MAX
 
@@ -22,3 +23,5 @@ char* string_read_word(char* input, int word_idx);
 
 /* splits a string into words. last element is NULL-termination. */
 char** split_string(char* input);
+
+#endif /* #ifndef __STRINGPARSE_H */
