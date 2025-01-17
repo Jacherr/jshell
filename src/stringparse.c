@@ -5,9 +5,37 @@
 
 #include "stringparse.h"
 
-__always_inline char character_is_whitespace(char character)
+char string_starts_with_char(char* input, char starts_with)
+{
+    return input[0] == starts_with;
+}
+
+char string_starts_with(char* input, char* starts_with)
+{
+    return strncmp(input, starts_with, strlen(starts_with)) == 0;
+}
+
+char string_ends_with_char(char* input, char ends_with)
+{
+    int len = strlen(input);
+    return input[len - 1] == ends_with;
+}
+
+char string_ends_with(char* input, char* ends_with)
+{
+    int input_len = strlen(input), search_len = strlen(ends_with);
+    int input_offset = input_len - search_len;
+    return strncmp(input + input_offset, ends_with, search_len) == 0;
+}
+
+char character_is_whitespace(char character)
 {
     return character == ' ' || character == '\n';
+}
+
+char character_is_newline(char character)
+{
+    return character == '\n';
 }
 
 void trim_string(char* input)
@@ -27,7 +55,7 @@ void trim_string(char* input)
     memmove(input, input+substr_start, substr_end+1);
 }
 
-ssize_t string_seek_to_word(char* input, int word_idx)
+ssize_t string_seek_to_next(char* input, int next_idx, char (split_criteria)(char))
 {
     size_t cursor = 0;
     char reading_whitespace = 0;
@@ -35,15 +63,15 @@ ssize_t string_seek_to_word(char* input, int word_idx)
 
     for(; cursor < strlen(input); cursor++)
     {
-        if(!reading_whitespace && character_is_whitespace(input[cursor]))
+        if(!reading_whitespace && split_criteria(input[cursor]))
         {
             /* look ahead at end of this word to see its length */
             reading_whitespace = 1;
             current_word_idx++;
-        } else if(!character_is_whitespace(input[cursor]))
+        } else if(!split_criteria(input[cursor]))
         {
             reading_whitespace = 0;
-            if(current_word_idx == word_idx)
+            if(current_word_idx == next_idx)
             {
                 return cursor;
             }
@@ -53,13 +81,13 @@ ssize_t string_seek_to_word(char* input, int word_idx)
     return -1;
 }
 
-char* string_read_word(char* input, int word_idx)
+char* string_read_next(char* input, int next_idx, char (split_criteria)(char))
 {
     ssize_t cursor = 0, old_cursor = 0;
     char* out;
     long word_len = 0;
 
-    cursor = string_seek_to_word(input, word_idx);
+    cursor = string_seek_to_next(input, next_idx, split_criteria);
     if(cursor < 0)
     {
         return NULL;
@@ -67,7 +95,7 @@ char* string_read_word(char* input, int word_idx)
     old_cursor = cursor;
 
     // we need to get the length of this word, and then copy it after
-    while(input[cursor] != '\0' && !character_is_whitespace(input[cursor]))
+    while(input[cursor] != '\0' && !split_criteria(input[cursor]))
     {
         word_len++;
         cursor++;
@@ -85,7 +113,7 @@ char* string_read_word(char* input, int word_idx)
     return out;
 }
 
-char** split_string(char* input)
+char** split_string_by(char* input, char (split_criteria)(char))
 {
     int words = 0, current_word_idx = 0;
     // if we are reading
@@ -104,7 +132,7 @@ char** split_string(char* input)
             break;
         }
 
-        current_word = string_read_word(input, current_word_idx);
+        current_word = string_read_next(input, current_word_idx, split_criteria);
         if(current_word != NULL)
         {
             words++;
@@ -119,4 +147,15 @@ char** split_string(char* input)
     out[current_word_idx] = NULL;
 
     return out;
+}
+
+void free_split_string(char** split)
+{
+    int idx = 0;
+    while(split[idx] != NULL)
+    {
+        free(split[idx]);
+    }
+
+    free(split);
 }

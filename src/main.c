@@ -12,7 +12,7 @@ int main(int argc, char* argv[])
 {
     char test[] = "   test  123 test   ";
 
-    char** out = split_string(test);
+    char** out = split_string_by(test, character_is_whitespace);
     int idx = 0;
 
     while(out[idx] != NULL)

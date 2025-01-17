@@ -19,6 +19,15 @@ enum lex_entry_type
     LEX_COMMAND_SUB
 };
 
+/*  Lexical analysis state. This includes a cursor as its primary construct. This
+    struct does not contain any stateful information about the execution environment
+    such as variables; only what is needed for lexical analysis.
+*/
+struct lexer
+{
+    size_t cursor;
+};
+
 struct lex_data_redirect_fd
 {
     int fd;
@@ -48,14 +57,8 @@ struct lex_token
     struct lex_token* next;
 };
 
-/*  Lexical analysis state. This includes a cursor as its primary construct. This
-    struct does not contain any stateful information about the execution environment
-    such as variables; only what is needed for lexical analysis.
-*/
-struct lexer
-{
-    size_t cursor;
-};
+/*  Get a token at an index, or NULL if no such token exists */
+struct lex_token* lex_token_get_idx(struct lex_token* start, unsigned int idx);
 
 /*  Yields the next sequence of lexical tokens that may be further parsed.
     In general, this is designed to be as lazy as possible. The lexical analysis 
