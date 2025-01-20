@@ -17,7 +17,7 @@ char string_ends_with_char(char* input, char ends_with);
 /* returns 1 if input ends with ends_with string (excluding null), 0 otherwise. */
 char string_ends_with(char* input, char* ends_with);
 
-/* returns 1 if character is whitespace, otherwise zero. */
+/* returns 1 if character is whitespace, otherwise 0. */
 char character_is_whitespace(char character);
 
 char character_is_newline(char character);

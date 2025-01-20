@@ -38,7 +38,7 @@ struct lex_token* extract_statement(struct lexer* lexer, char* input)
     struct lex_token* out;
     struct lex_token* last = NULL;
 
-    char** words = split_string_by(input, character_is_newline);
+    char** words = split_string_by(input, character_is_whitespace);
     int word_idx = 0;
 
     /*  We keep track of block depth to know when to finish extracting statements.
@@ -53,7 +53,10 @@ struct lex_token* extract_statement(struct lexer* lexer, char* input)
         int cursor = 0;
         char* word = words[word_idx];
 
-
+        /*  we need to see if the word contains any special characters and handle
+            them appropriately, this list can always be expanded
+        */
+       
     }
 
     free_split_string(words);

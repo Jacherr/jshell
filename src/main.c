@@ -5,29 +5,12 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#include "keyword.h"
 #include "help.h"
 #include "stringparse.h"
 
 int main(int argc, char* argv[])
 {
-    char test[] = "   test  123 test   ";
-
-    char** out = split_string_by(test, character_is_whitespace);
-    int idx = 0;
-
-    while(out[idx] != NULL)
-    {
-        printf("'%s'\n", out[idx]);
-        idx++;
-    }
-
-
-    // if(argc <= 1)
-    // {
-    //     print_help();
-    //     return 0;
-    // }
-
     // while(1)
     // {
     //     /* maximum length of command-line input */
